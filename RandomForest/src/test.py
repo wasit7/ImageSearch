@@ -6,50 +6,60 @@ Created on Wed Aug 06 15:08:04 2014
 """
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-# Testing: Flat map
+# Testing: % Correct on one multiple trees
+# It load tree before testing
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-%matplotlib inline
+import sys
+import random
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from master import Master
 
-master = Master() 
-roots = master.load_trees(prefix='tree_5_100_devie_by_2_evaluation')
+class Record:
+    def __init__(self, features, label):
+        self.features = features
+        self.label = label
 
-plt.hold(True)
-plt.figure(1)
-for t in range(3):
-    plt.subplot(2, 2, t+1)
-    x, y = np.meshgrid(np.linspace(-1, 1, 100), np.linspace(-1, 1, 100))
-    z = np.array([], dtype=np.float)
-    for i in range(100):
-        cls = []
-        for j in range(100):
-            cls.append(np.argmax(master.get_result(roots[t], (x[i][j], y[i][j]))))
-        z = np.append(z, cls)
-    z = z.reshape(100, 100)
-    plt.pcolormesh(x, y, z)
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-# Testing: Inter map
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-import matplotlib.pyplot as plt
-import numpy as np
+def dataSetGenerator(clmax):
+    data = []
+    for x in range(clmax):
+        theta = np.linspace(0, 2*np.pi, 100)+np.random.randn(100)*0.4*np.pi/clmax + 2*np.pi*x/clmax
+        r = np.linspace(0.1, 1, 100)
+        xPoints = r*np.cos(theta)
+        yPoints = r*np.sin(theta)
+        for i in range(len(xPoints)):
+            data.append(Record([xPoints[i], yPoints[i]], x))
+    return data
 
-plt.hold(True)
-plt.figure(1)
-plt.subplot(2, 2, 4)
+def main(clmax, prefix):
+    # generate dataset for test
+    dataset = dataSetGenerator(clmax)
 
-x, y = np.meshgrid(np.linspace(-1, 1, 100), np.linspace(-1, 1, 100))
-z = np.array([], dtype=np.float)
-for i in range(100):
-    cls = []
-    for j in range(100):
-        cls.append(np.argmax(master.get_results(roots, (x[i][j], y[i][j]))))
-    z = np.append(z, cls)
-z = z.reshape(100, 100)
-plt.pcolormesh(x, y, z)
+    master = Master() 
+    roots = master.load_trees(prefix=prefix)
 
-plt.axis([-1, 1, -1, 1])
-plt.show()
+    sampling_rate = 30
+    samples = int(sampling_rate*len(dataset)/100)
+
+    corrects = []
+    for x in range(100) :
+        correct = 0
+        for i in random.sample(range(len(dataset)), samples):
+            expt = dataset[i].label
+            res = np.argmax(master.get_results(roots, dataset[i].features))
+            if res == expt:
+                correct += 1
+        corrects.append(correct)
+
+    #print('Correct: ', corrects)
+    corrects = sum(corrects)/len(corrects)
+    print('\nTesting with clmax: {}'.format(clmax))
+    print('Correct/Total: {c}/{t}'.format(c=corrects, t=samples))
+    print('% Correct from {} tree(s): {}%'.format(3, float(corrects)/float(samples)*100))
+
+if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print('Usage: ', sys.argv[0], ' <clmax> <tree_prefix>')
+        sys.exit(1)
+    main(int(sys.argv[1]), sys.argv[2])
