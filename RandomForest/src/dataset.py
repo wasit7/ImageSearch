@@ -35,7 +35,29 @@ class Dataset:
             
             self.I = np.append(self.I, [r*np.cos(theta), r*np.sin(theta)], axis=1)
             self.L = np.append(self.L, np.ones(self.Q_length, dtype=np.int)*x, axis=1)
-    
+
+    def getL(self, x):
+        """
+        Return 
+            Label of record x
+        """
+        pass
+
+    def getI(self, theta, x):
+        """
+        Return
+            raw data of record x with dimension theta
+        """
+        return self.I[theta, x]
+
+    def getSize(self):
+        pass
+
+    def getX(self):
+        pass
+
+    def getParam(self, X):
+        pass
 
     def __str__(self):
         '''Return:

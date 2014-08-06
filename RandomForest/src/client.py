@@ -113,7 +113,8 @@ class Client:
             index = np.random.permutation(self.current_node.bag)[:attempt]
 
             theta = np.random.randint(self.dataset.feature, size=attempt)
-            tau = self.dataset.I[theta,index]
+            #tau = self.dataset.I[theta,index]
+            tau = self.dataset.getI(theta, index)
             
             if len(theta) == 0:
                 return None, None
@@ -143,7 +144,8 @@ class Client:
             l = []
             r = []
             for i in self.current_node.bag[:]:
-                t = self.dataset.I[theta, i]
+                #t = self.dataset.I[theta, i]
+                t = self.dataset.getI(theta, i)
                 if t < tau:
                     l.append(i)
                 else:
@@ -168,7 +170,8 @@ class Client:
         l = []
         r = []
         for i in self.current_node.bag:
-            t = self.dataset.I[theta, i]
+            #t = self.dataset.I[theta, i]
+            t = self.dataset.getI(theta, i)
             if t < tau:
                 l.append(i)
             else:
