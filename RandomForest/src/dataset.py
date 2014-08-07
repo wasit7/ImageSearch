@@ -5,8 +5,12 @@ Created on Wed Aug 06 16:12:37 2014
 @author: Krerkait
 """
 from json import loads
+from os import getcwd, listdir
+from os.path import join
 
 import numpy as np
+L = []
+
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # Dataset
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -44,17 +48,43 @@ class Dataset:
     def __str__(self):
         raise NotImplementedError
 
-class LibraryImageDataset(Dataset):
-    def __init__(self):
-        pass
-        # 1st add
-        # read json file
+class Rectangle:
+    def __init__(self, label='', x=0, y=0, w=0, h=0):
+        self.label = label
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
 
-        # 2nd add
-        # loop through json object
-            # each object represent an image
-            # random arbitary point in image area
-                # for each point, check for it's label
+    def __contains__(self, pos):
+        return self.label  if (self.x <= pos[0] <self.x+self.w) and \
+            (self.y <= pos[1] <self.y+self.h) else 0
+
+class LibraryImageDataset(Dataset):
+    def __init__(self, **kwargs):
+        global L
+
+        if 'json' in kwargs:
+            json = kwargs['json']
+        else :
+            json = join('..', '..', 'App', 'json')
+
+        for index, f in  enumerate(listdir(json)):
+            path = join(json, f)
+            with open(path, 'r') as fp:
+                data = loads(fp.read())
+            rects = []
+            for label in data['labels']:
+                rects.append(Rectangle(label=label['label'], x=label['x'],\
+                    y=label['y'], w=label['w'], h=label['h']))
+            L.append(rects)
+
+    def getL(self, x, y, img):
+        global L
+        for rect in L[img]:
+            if (x,y) in rect :
+                return rect.label
+        return 0
 
 
 class SpiralDataset(Dataset):
@@ -121,3 +151,8 @@ class SpiralDataset(Dataset):
             string that represent this class
         '''
         return 'clmax: {cm}, data_per_class: {ql}'.format(cm=self.clmax, ql=self.data_per_class)
+
+if __name__ == '__main__':
+    dataset = LibraryImageDataset()
+    print L
+    print dataset.getL(0, 0, 1)
