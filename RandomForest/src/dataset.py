@@ -4,9 +4,9 @@ Created on Wed Aug 06 16:12:37 2014
 
 @author: Krerkait
 """
+from json import loads
 
 import numpy as np
-
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # Dataset
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -47,6 +47,7 @@ class Dataset:
 class LibraryImageDataset(Dataset):
     def __init__(self):
         pass
+        # 1st add
         # read json file
 
         # loop through json object
