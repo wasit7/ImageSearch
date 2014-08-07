@@ -43,6 +43,16 @@ class Dataset:
     def __str__(self):
         raise NotImplementedError
 
+class LibraryImageDataset(Dataset):
+    def __init__(self):
+        # read json file
+
+        # loop through json object
+            # each object represent an image
+            # random arbitary point in image area
+                # for each point, check for it's label
+
+
 class SpiralDataset(Dataset):
     '''
     Provide Spiral Dataset to Random Forest
@@ -71,10 +81,10 @@ class SpiralDataset(Dataset):
 
     def getL(self, x):
         '''
-        Return 
-            Label of record x
+        Return label of record at x
+        or a list of labels of records at x(numpy.ndarray)
         '''
-        pass
+        return self.L[x]
 
     def getI(self, theta, x):
         '''

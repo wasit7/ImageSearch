@@ -164,7 +164,8 @@ class Client:
         '''
         # cnt appear
         if len(lst) != 0:
-            appear = np.bincount(self.dataset.L[np.array(lst)], minlength=self.dataset.clmax)
+            # appear = np.bincount(self.dataset.L[np.array(lst)], minlength=self.dataset.clmax)
+            appear = np.bincount(self.dataset.getL(np.array(lst)), minlength=self.dataset.clmax)
             appear = np.array(appear, dtype=np.float)
         else:
             appear = np.zeros(self.dataset.clmax)
@@ -184,7 +185,8 @@ class Client:
         lst = self.current_node.bag
         # cnt appear
         if len(lst) != 0:
-            appear = np.bincount(self.dataset.L[np.array(lst)], minlength=self.dataset.clmax)
+            # appear = np.bincount(self.dataset.L[np.array(lst)], minlength=self.dataset.clmax)
+            appear = np.bincount(self.dataset.getL(np.array(lst)), minlength=self.dataset.clmax)
             appear = np.array(appear, dtype=np.float)
         else:
             appear = np.zeros(self.dataset.clmax)
