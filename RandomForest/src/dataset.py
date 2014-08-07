@@ -4,6 +4,7 @@ Created on Wed Aug 06 16:12:37 2014
 
 @author: Krerkait
 """
+
 import numpy as np
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -45,6 +46,7 @@ class Dataset:
 
 class LibraryImageDataset(Dataset):
     def __init__(self):
+        pass
         # read json file
 
         # loop through json object
