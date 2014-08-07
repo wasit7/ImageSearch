@@ -50,6 +50,7 @@ class LibraryImageDataset(Dataset):
         # 1st add
         # read json file
 
+        # 2nd add
         # loop through json object
             # each object represent an image
             # random arbitary point in image area
