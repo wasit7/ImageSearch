@@ -6,6 +6,24 @@ Created on Wed Aug 06 15:06:13 2014
 """
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# MasterNode
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+class MasterNode:
+    def __init__(self, old_h=None, depth=None):
+        self.theta = None
+        self.tau = None
+        
+        self.prop = None
+        
+        self.old_h = old_h
+        self.depth = depth
+        
+        self.left = None
+        self.right = None
+    
+    def __str__(self):
+        return 'm_node@{d} theta: {tt}, tau: {t}, prop: {p}'.format(d=self.depth, tt=self.theta, t=self.tau, p=self.prop)
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # Master
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 import os
@@ -323,22 +341,3 @@ class Master:
             roots.append(self.load_tree(os.path.join(path, f)))
         
         return roots
-    
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-# MasterNode
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-class MasterNode:
-    def __init__(self, old_h=None, depth=None):
-        self.theta = None
-        self.tau = None
-        
-        self.prop = None
-        
-        self.old_h = old_h
-        self.depth = depth
-        
-        self.left = None
-        self.right = None
-    
-    def __str__(self):
-        return 'm_node@{d} theta: {tt}, tau: {t}, prop: {p}'.format(d=self.depth, tt=self.theta, t=self.tau, p=self.prop)
