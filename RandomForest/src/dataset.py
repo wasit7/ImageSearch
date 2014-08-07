@@ -33,9 +33,6 @@ class Dataset:
         '''
         raise NotImplementedError
 
-    def getDimension(self):
-        raise NotImplementedError
-
     def getSize(self):
         raise NotImplementedError
 
@@ -100,9 +97,9 @@ class SpiralDataset(Dataset):
         self.clmax = clmax;    # class max of dataset
         self.data_per_class = data_per_class    # q size per class per client
         
-        dimension = 2 # it is axis x and y
+        self.dimension = 2 # it is axis x and y
         
-        self.I =  np.zeros([dimension, 0], dtype=np.float)  # np.ndarray row vetor, hold features
+        self.I =  np.zeros([self.dimension, 0], dtype=np.float)  # np.ndarray row vetor, hold features
         self.L =  np.array([], dtype=np.int)    # np.array, hold label
 
         # create I
@@ -127,12 +124,6 @@ class SpiralDataset(Dataset):
         '''
         return self.I[theta, x]
 
-    def getDimension(self):
-        '''
-        Return dimension of data
-        '''
-        return self.I.shape[0]
-
     def getSize(self):
         '''
         Return size of dataset
@@ -143,7 +134,12 @@ class SpiralDataset(Dataset):
         pass
 
     def getParam(self, X):
-        pass
+        '''
+        Return list of theta, tau for X
+        '''
+        theta = np.random.randint(self.dimension, size=len(X))
+        tau = self.getI(theta, X)
+        return theta, tau
 
     def __str__(self):
         '''

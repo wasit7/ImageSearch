@@ -73,13 +73,9 @@ class Client:
         if len(self.current_node.bag) != 0:        
             #attempt = len(self.current_node.bag)//2
             attempt = np.ceil(np.sqrt(len(self.current_node.bag)))
-
             index = np.random.permutation(self.current_node.bag)[:attempt]
 
-            # theta = np.random.randint(self.dataset.feature, size=attempt)
-            theta = np.random.randint(self.dataset.getDimension(), size=attempt)
-            #tau = self.dataset.I[theta,index]
-            tau = self.dataset.getI(theta, index)
+            theta, tau = self.dataset.getParam(index)
             
             if len(theta) == 0:
                 return None, None
@@ -109,7 +105,6 @@ class Client:
             l = []
             r = []
             for i in self.current_node.bag[:]:
-                #t = self.dataset.I[theta, i]
                 t = self.dataset.getI(theta, i)
                 if t < tau:
                     l.append(i)
@@ -135,7 +130,6 @@ class Client:
         l = []
         r = []
         for i in self.current_node.bag:
-            #t = self.dataset.I[theta, i]
             t = self.dataset.getI(theta, i)
             if t < tau:
                 l.append(i)
@@ -163,12 +157,7 @@ class Client:
             entropy of lst
         '''
         # cnt appear
-        if len(lst) != 0:
-            # appear = np.bincount(self.dataset.L[np.array(lst)], minlength=self.dataset.clmax)
-            appear = np.bincount(self.dataset.getL(np.array(lst)), minlength=self.dataset.clmax)
-            appear = np.array(appear, dtype=np.float)
-        else:
-            appear = np.zeros(self.dataset.clmax)
+        appear = self.cnt_appear(lst)
 
         # cal Prop
         appear += np.finfo(np.float32).tiny
@@ -177,15 +166,13 @@ class Client:
         # cal H
         return -1*np.inner(prop, np.log2(prop))
     
-    def cnt_appear(self):
+    def cnt_appear(self, lst):
         '''Count appear of each class in current_node.bag
         Return:
             appear of each class
         '''
-        lst = self.current_node.bag
         # cnt appear
         if len(lst) != 0:
-            # appear = np.bincount(self.dataset.L[np.array(lst)], minlength=self.dataset.clmax)
             appear = np.bincount(self.dataset.getL(np.array(lst)), minlength=self.dataset.clmax)
             appear = np.array(appear, dtype=np.float)
         else:
@@ -197,7 +184,7 @@ class Client:
         '''Return:
             current_node bag size
         '''
-        return np.sum(self.cnt_appear())
+        return np.sum(self.cnt_appear(self.current_node.bag))
     
 if __name__ == '__main__':
     dataset = SpiralDataset(clmax, np2c)

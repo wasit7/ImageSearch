@@ -224,7 +224,7 @@ class Master:
         '''This are call when we reach termonate case (3 cases)
         It will save prop of each class onto node:MasterNode'''
         
-        self.dview.execute('appear = client.cnt_appear()')
+        self.dview.execute('appear = client.cnt_appear(client.current_node.bag)')
         appear = self.dview['appear']
         
         appears = []
