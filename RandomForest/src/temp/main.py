@@ -7,7 +7,7 @@ Created on Sat Aug 02 13:40:59 2014
 import numpy as np
 import matplotlib.pyplot as plt
 from rfmaster import master
-from rfdataset import dataset
+
 if __name__ == '__main__':
     clmax=5
     spc=1000

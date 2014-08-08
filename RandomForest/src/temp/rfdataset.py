@@ -40,7 +40,8 @@ class dataset:
     def getX(self):
         """random samples X at only init dataset
         X is a set of primary keys of records"""
-        return np.arange(self.size)
+        #return np.arange(self.size)
+        return np.random.permutation(self.size)
         
     def getParam(self, X):
         """ return a number of set ofrandom split parameters

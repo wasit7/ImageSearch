@@ -23,8 +23,14 @@ class client:
         self.queue.append(self.curNode.right)
         
     def getParam(self):
-        attemp=min(self.maxAttemp, len(self.curNode.bag)*10)
-        sample_id=np.random.randint(len(self.curNode.bag), size=attemp)
+#        attemp=min(self.maxAttemp, len(self.curNode.bag)*10)
+#        sample_id=np.random.randint(len(self.curNode.bag), size=attemp)
+    
+        attemp=min(self.maxAttemp, len(self.curNode.bag))
+        sample_id=np.arange(len(self.curNode.bag))[:attemp]
+        print("c    attemp:{0}".format(attemp))
+        print("c    sample_id:{0}".format(sample_id))
+        print("c    bag:{0}".format(self.curNode.bag))
         X=self.curNode.bag[sample_id]
         return self.ds.getParam(X)
     
@@ -39,9 +45,9 @@ class client:
         p=p + tiny
         p=p/np.sum(p)
         H=entropy(p)
-        print('c    getH H:{0}'.format(H))
-        print('c    getH p:{0}'.format(p))
-        print('c    getH Q:{0}'.format(Q))
+        print('c    getH H:{:}'.format(H))
+        print('c    getH p:{:}'.format(p))
+        print('c    getH Q:{:}'.format(Q))
         return H, p, len(bag)
         
     def getQH(self,thetas,taus):

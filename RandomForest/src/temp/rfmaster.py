@@ -74,7 +74,7 @@ class master:
            
     def split(self):
         while len(self.queue)>0:
-#01#02 pop both master and client
+#01#02 pop both master and clients
             self.pop()
 #03 if reach maximum depth
             print('{0}, depth{1}'.\
