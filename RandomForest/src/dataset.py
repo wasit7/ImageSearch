@@ -64,7 +64,7 @@ class Rectangle:
 
 class LibraryImageDataset(Dataset):
     def __init__(self, **kwargs):
-        self.rectL = []
+        self.labeledImages = []
         # self.samples = self.getSamples()
 
         # load JSON
@@ -94,7 +94,7 @@ class LibraryImageDataset(Dataset):
             for label in data['labels']:
                 rects.append(Rectangle(label=label['label'], x=label['x'],\
                     y=label['y'], w=label['w'], h=label['h']))
-            self.rectL.append(rects)
+            self.labeledImages.append(rects)
             
             # setup I
             # img = Image.open(data['path'])
@@ -137,6 +137,16 @@ class LibraryImageDataset(Dataset):
                 return rect.label
         return 0
 
+    def getX(self):
+        '''
+        To random n=10 samples from each image
+        '''
+        for i in self.labeledImages:
+            width=i.width
+            height=i.height
+            c=np.random.randint(width)
+            r=np.random.randint(height)
+            self.samples.append([r,c,img])
 
 class SpiralDataset(Dataset):
     '''
@@ -192,7 +202,7 @@ class SpiralDataset(Dataset):
 
     def getX(self):
         pass
-
+    
     def getParam(self, X):
         pass
 
