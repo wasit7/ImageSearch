@@ -25,13 +25,20 @@ class Dataset:
 
     def getL(self, x):
         '''
-        Return label of record x
+        Input: 
+            x: int or numpy.array
+        Return:
+            label of record x
         '''
         raise NotImplementedError
 
     def getI(self, theta, x):
         '''
-        Return raw data of record x with dimension theta
+        Input:
+            theta: int or tuple of number
+            x: int or numpy.array
+        Return:
+            raw data of record x with dimension theta
         '''
         raise NotImplementedError
 
@@ -45,6 +52,12 @@ class Dataset:
         raise NotImplementedError
 
     def getParam(self, X):
+        '''
+        Input:
+            X: numpy.array
+        Return:
+            list of theta, tau
+        '''
         raise NotImplementedError
 
     def __str__(self):
@@ -152,14 +165,14 @@ class SpiralDataset(Dataset):
     '''
     Provide Spiral Dataset to Random Forest
     '''
-    def __init__(self, clmax, data_per_class):
+    def __init__(self, clmax, spc):
         '''
         Initial routine
             clmax:int - maximum number of class
-            data_per_class:int - size of data per class
+            spc:int - size of data per class per client
         '''
         self.clmax = clmax;    # class max of dataset
-        self.data_per_class = data_per_class    # q size per class per client
+        self.spc = spc    # q size per class per client
         
         dimension = 2 # it is axis x and y
         
@@ -168,11 +181,11 @@ class SpiralDataset(Dataset):
 
         # create I
         for x in range(self.clmax): 
-            theta = np.linspace(0, 2*np.pi, self.data_per_class)+np.random.randn(self.data_per_class)*0.4*np.pi/clmax + 2*np.pi*x/clmax 
-            r = np.linspace(0.1, 1, self.data_per_class)
+            theta = np.linspace(0, 2*np.pi, self.spc)+np.random.randn(self.spc)*0.4*np.pi/clmax + 2*np.pi*x/clmax 
+            r = np.linspace(0.1, 1, self.spc)
             
             self.I = np.append(self.I, [r*np.cos(theta), r*np.sin(theta)], axis=1)
-            self.L = np.append(self.L, np.ones(self.data_per_class, dtype=np.int)*x, axis=1)
+            self.L = np.append(self.L, np.ones(self.spc, dtype=np.int)*x, axis=1)
 
     def getL(self, x):
         '''
@@ -211,7 +224,7 @@ class SpiralDataset(Dataset):
         Return:
             string that represent this class
         '''
-        return 'clmax: {cm}, data_per_class: {ql}'.format(cm=self.clmax, ql=self.data_per_class)
+        return 'clmax: {cm}, spc: {ql}'.format(cm=self.clmax, ql=self.spc)
 
 if __name__ == '__main__':
     dataset = LibraryImageDataset()

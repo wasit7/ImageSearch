@@ -30,27 +30,24 @@ class Client:
     Provide base orperator for random forest's tree creation
     It did not keep each ClientNode, If it no longer use each ClientNode it will dereferance that node 
     '''
-    def __init__(self, clmax, np2c, dataset):
+    def __init__(self, clmax, dataset):
         '''
         Init routine
             clmax:int - number of class
-            np2c:int - Number of sample Per Class Client
         '''
         self.clmax = clmax
-        self.np2c = np2c    # n2pc : Number of sample Per Class Client
         
         # init dataset
-        #self.dataset = Dataset(self.clmax, self.np2c)
         self.dataset = dataset
         
         self.current_node = None
-        self.queue = [ClientNode(np.arange(0, self.clmax*self.np2c))] # np.arange(0, clmax*np2c) - use all dataset
+        self.queue = [ClientNode(np.arange(0, self.clmax*self.dataset.spc))] # np.arange(0, clmax*spc) - use all dataset
         
     def reset(self):
         '''Reset current_node and queue to start state for ready to create new tree with new parameter'''
         # init bag (queue)
         self.current_node = None
-        self.queue = [ClientNode(np.arange(0, self.clmax*self.np2c))] # np.arange(0, clmax*np2c) - use all dataset
+        self.queue = [ClientNode(np.arange(0, self.clmax*self.dataset.spc))] # np.arange(0, clmax*spc) - use all dataset
     
     def get_init_parameter(self):
         '''Calculate init H (entropy) of first ndoe
@@ -187,5 +184,5 @@ class Client:
         return np.sum(self.cnt_appear(self.current_node.bag))
     
 if __name__ == '__main__':
-    dataset = SpiralDataset(clmax, np2c)
-    client = Client(clmax, np2c, dataset)
+    dataset = SpiralDataset(clmax, spc)
+    client = Client(clmax, dataset)

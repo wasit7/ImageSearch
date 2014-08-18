@@ -4,6 +4,15 @@ Created on Wed Aug 06 15:06:13 2014
 
 @author: Krerkait
 """
+import os
+import sys
+import time
+import json
+
+import numpy as np
+from IPython import parallel
+
+from client import Client
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # MasterNode
@@ -23,17 +32,10 @@ class MasterNode:
     
     def __str__(self):
         return 'm_node@{d} theta: {tt}, tau: {t}, prop: {p}'.format(d=self.depth, tt=self.theta, t=self.tau, p=self.prop)
+
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # Master
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-import os
-import sys
-import time
-import json
-
-import numpy as np
-from IPython import parallel
-
 class Master:
     '''This class are on Master side in cluster'''
     def __init__(self, clmax=5, np2c=30, max_depth=30, min_bag_size=2):
@@ -54,7 +56,7 @@ class Master:
     
     def init_client(self):
         # init client
-        self.dview.push({'np2c':self.np2c, 'clmax':self.clmax});
+        self.dview.push({'spc':self.np2c, 'clmax':self.clmax});
         self.dview.run('dataset.py')
         self.dview.run('client.py')
     
@@ -79,14 +81,16 @@ class Master:
     def create_tree(self):
         '''This will create one tree per call so if u need to create more than one tree please call this multiple time
         This method does not handle save tree process so you need to handle it in youn own way
-        This will return a root of tree that it created
+        This will froce to save tree that it created
         '''
+        start_time = time.time()
+        start_time_str = time.strftime("%c")
         
         # prepare for creation
         H = self.cal_init_h()
         root = MasterNode(H, 0)
         queue = [root]
-        
+
         while len(queue) != 0:
             current_node = queue.pop(0)
             self.dview.execute('client.dequeue()')
@@ -99,12 +103,15 @@ class Master:
 
                 current_node.right = right
                 queue.append(right)
+
+        end_time = time.time()
+        end_time_str = time.strftime("%c")
         
         # reseting and cleanning memory
         self.dview.execute('client.reset()')
         #self.clients.purge_everything()
         self.clients.purge_results('all')
-        
+
         return root
                 
     def split(self, node):
@@ -237,31 +244,6 @@ class Master:
         
         #print(list(range(node.depth + 1)), '\tprop saved on:', str(node))
     
-    def get_results(self, roots, I):
-        '''This use for get result from multiple dicision tree on master for feature list I'''
-        props = []
-        for root in roots:
-            props.append(self._get_result(root, I))
-        props = np.array(props)
-        return np.sum(props, axis=0)/len(roots)
-    
-    def get_result(self, tree, I):
-        '''This use for get result from tree:int dicision tree on master for feature list I'''
-        return self._get_result(tree, I)
-    
-    def _get_result(self, node, I):
-        '''This use for get result from dicision tree on master for feature list I (recursive)'''
-        if node.prop != None:
-            return node.prop
-        
-        tau = I[node.theta]
-
-        if node.left and tau < node.tau:
-            return self._get_result(node.left, I)
-        if node.right and tau >= node.tau:
-            return self._get_result(node.right, I)
-        return -1  # for unknow
-    
     def _node_to_dict(self, node):
         if node == None:
             return None
@@ -285,59 +267,13 @@ class Master:
 
         return result
     
-    def _dict_to_node(self, dict_):
-        if dict_ == None:
-            return None
-        
-        root = MasterNode()
-        
-        if dict_['prop'] == None:
-            root.prop = None
-        else:
-            root.prop = np.array(dict_['prop'])
-            
-        if dict_['theta'] == None:
-            root.theta = None
-            root.tau = None
-        else:
-            root.theta = np.int32(dict_['theta'])
-            root.tau = np.float64(dict_['tau'])
-            
-        root.left = self._dict_to_node(dict_['left'])
-        root.right = self._dict_to_node(dict_['right'])
-        
-        return root
-    
-    def save_tree(self, tree, filename=None):
+    def save_tree(self, tree, filename):
         '''
         Write selected decision tree to files,
         '''
-        if filename == None:
-            filename = 'tree_{}.json'.format(time.strftime("%c"))
         
         f = open(filename, 'w')
         result = self._node_to_dict(tree)
         json.dump(result, f, indent=2)
         f.close()
-    
-    def load_tree(self, filename):
-        '''
-        Read decision tree from file
-        '''
-        f = open(filename, 'r')
-        dict_ = json.load(f)
-        f.close()
-        root = self._dict_to_node(dict_)
-        return root
-        
-    def load_trees(self, path='.', prefix='tree'):
-        '''
-        Read set of decision tree from set of files that match prefix
-        '''
-        # fectch file list in target folder
-        treefiles = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)) and f.startswith(prefix)]
-        roots = []
-        for f in treefiles:
-            roots.append(self.load_tree(os.path.join(path, f)))
-        
-        return roots
+        print('{} saved'.format(filename))

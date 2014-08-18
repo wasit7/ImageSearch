@@ -14,7 +14,8 @@ import random
 
 import numpy as np
 
-from master import Master
+#from master import Master
+from recall import Recall
 
 class Record:
     def __init__(self, features, label):
@@ -36,8 +37,10 @@ def main(clmax, prefix):
     # generate dataset for test
     dataset = dataSetGenerator(clmax)
 
-    master = Master() 
-    roots = master.load_trees(prefix=prefix)
+    #master = Master() 
+    #roots = master.load_trees(prefix=prefix)
+    recall = Recall()
+    roots = recall.load_trees(prefix=prefix)
 
     sampling_rate = 30
     samples = int(sampling_rate*len(dataset)/100)
@@ -47,7 +50,7 @@ def main(clmax, prefix):
         correct = 0
         for i in random.sample(range(len(dataset)), samples):
             expt = dataset[i].label
-            res = np.argmax(master.get_results(roots, dataset[i].features))
+            res = np.argmax(recall.get_results(roots, dataset[i].features))
             if res == expt:
                 correct += 1
         corrects.append(correct)
@@ -56,7 +59,7 @@ def main(clmax, prefix):
     corrects = sum(corrects)/len(corrects)
     print('\nTesting with clmax: {}'.format(clmax))
     print('Correct/Total: {c}/{t}'.format(c=corrects, t=samples))
-    print('% Correct from {} tree(s): {}%'.format(3, float(corrects)/float(samples)*100))
+    print('% Correct from {} tree(s): {}%'.format(len(roots), float(corrects)/float(samples)*100))
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:

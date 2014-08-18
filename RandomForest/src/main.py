@@ -36,7 +36,6 @@ def main(clmax, np2c, tree_file_format):
         run_time = end_time - start_time
         total_run_time += run_time
         print('Run time: {} sec'.format(run_time))
-        print('Saving...')
         master.save_tree(t, tree_file_format.format(clmax=master.clmax, np2c=master.np2c, index=i))
 
     print('\n{} Tree(s) creation successful'.format(number_of_tree))
@@ -58,4 +57,4 @@ if __name__ == '__main__':
         tree_file_format = sys.argv[3]
         main(clmax, np2c, tree_file_format)
         
-    test.main(int(sys.argv[1]), tree_file_format[:-13].format(clmax=clmax, np2c=np2c))
+    test.main(clmax, tree_file_format[:-13].format(clmax=clmax, np2c=np2c))
