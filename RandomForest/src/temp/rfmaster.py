@@ -105,28 +105,28 @@ class master:
                         thetas=np.append(thetas,newthetas)
                         taus=np.append(taus,newtaus)
     
-                    print('m  thetas:{0}'.format(thetas))
-                    print('m  taus:{0}'.format(taus))
-                    print('m  len(taus): {0}'.format(len(taus)))
+                    print('m  split thetas:{0}'.format(thetas))
+                    print('m  split taus:{0}'.format(taus))
+                    print('m  split len(taus): {0}'.format(len(taus)))
 #09 ({QlHl+QrHr},Q) getQH(thetas,taus)
                     QHs=np.zeros( (self.numClients, len(taus)) )
                     Qs=np.zeros( self.numClients)
                     for i in xrange(self.numClients):
                         QHs[i,:],Qs[i] =self.myClients[i].getQH(thetas,taus)
-                        print('m    QHs:{0}'.format(QHs))
-                        print('m    Qs:{0}'.format(Qs))
+                        print('m{1}  split QHs:{0}'.format(QHs,i))
+                        print('m{1}  split Qs:{0}'.format(Qs,i))
                     sumQHs=np.sum(QHs,axis=0)
                     sumQs=np.sum(Qs)
-                    print('m    sumQHs:{0}'.format(sumQHs))
-                    print('m    sumQs:{0}'.format(sumQs))
+                    print('m{1}  split sumQHs:{0}'.format(sumQHs,i))
+                    print('m{1}  split sumQs:{0}'.format(sumQs,i))
                     
 #10 (Gx,theta,tau) Gmax()
                     newH=sumQHs/sumQs
-                    print('m  newH: {0}'.format(newH))
+                    print('m  split newH: {0}'.format(newH))
                     G=self.curNode.H-newH
-                    print('G:{0}'.format(G))
+                    print('m  split G:{0}'.format(G))
                     iGx=np.argmax(G)
-                    print( 'iGx:{0}, Gx:{1}'.format( np.argmax(G),G[iGx] ) )
+                    print( 'm  split iGx:{0}, Gx:{1}'.format( np.argmax(G),G[iGx] ) )
 #11 if Gx<0
                     if G[iGx]<0.0:
 #12    terminate
@@ -145,7 +145,7 @@ class master:
     def classify(self,data):
         node=self.root        
         while node.left is not None:
-            print('{0} H:{1} p:{2} theta:{3} tau:{4}'\
+            print('classify  {0} H:{1} p:{2} theta:{3} tau:{4}'\
             .format(node.key,node.H,node.p,node.theta,node.tau)
             )
             if data[int(node.theta)]<node.tau:
@@ -153,7 +153,7 @@ class master:
             else:
                 node=node.right
         
-        print('{0} theta:{0} tau:{1}'.format(node.theta,node.tau))
+        print('classify  {0} theta:{0} tau:{1}'.format(node.theta,node.tau))
         print('----p:{1} H:{2}'.format(node.key,node.p,node.H))
         return np.argmax(node.parent.p)
         
@@ -172,5 +172,6 @@ class mnode:
 tiny=np.finfo(np.float32).tiny
 
 if __name__ == '__main__':
-    mm=master(clmax=2,spc=5,maxDepth=10,numClients=1)
+    mm=master(clmax=2,spc=50,maxDepth=10,numClients=2)
     mm.split()
+    mm.classify([0,0])
