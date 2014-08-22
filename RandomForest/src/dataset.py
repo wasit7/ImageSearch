@@ -211,7 +211,8 @@ class SpiralDataset(Dataset):
         '''
         Return size of dataset
         '''
-        return self.I.shape[1]
+        #return self.I.shape[1]
+        return self.clmax * self.spc
 
     def getX(self):
         pass

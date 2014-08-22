@@ -3,6 +3,7 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 import sys
 import time
+import json
 
 from master import Master
 import test
@@ -25,18 +26,29 @@ def main(clmax, np2c, tree_file_format):
     print('Will create {} tree(s):'.format(number_of_tree))
     
     total_run_time = 0
+    file_list = []
     # loop to create trees
     for i in range(number_of_tree):
         print('\nCreating tree {}...'.format(i))
         
-        start_time = time.time()
-        t = master.create_tree()
-        end_time = time.time()
+        t, tree_filename, time_use = master.create_tree()
+        file_list.append(tree_filename)
         
-        run_time = end_time - start_time
-        total_run_time += run_time
-        print('Run time: {} sec'.format(run_time))
+        total_run_time += time_use
+        
         master.save_tree(t, tree_file_format.format(clmax=master.clmax, np2c=master.np2c, index=i))
+
+    tree_information = {
+        'clmax': master.clmax,
+        'spc': master.np2c,
+        'max_depth': master.max_depth,
+        'min_bag_size': master.min_bag_size,
+        'file_list': file_list
+    }
+
+    f = open('main.json', 'w')
+    json.dump(tree_information, f, indent=2)
+    f.close()
 
     print('\n{} Tree(s) creation successful'.format(number_of_tree))
     print('Total run time: {} sec'.format(total_run_time))

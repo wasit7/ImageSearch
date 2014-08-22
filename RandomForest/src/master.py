@@ -8,6 +8,7 @@ import os
 import sys
 import time
 import json
+import datetime
 
 import numpy as np
 from IPython import parallel
@@ -83,10 +84,12 @@ class Master:
         This method does not handle save tree process so you need to handle it in youn own way
         This will froce to save tree that it created
         '''
+
         start_time = time.time()
-        start_time_str = time.strftime("%c")
+        start_time_str = datetime.datetime.now().isoformat()
         
         # prepare for creation
+        tree_filename = str(start_time) + '.json'
         H = self.cal_init_h()
         root = MasterNode(H, 0)
         queue = [root]
@@ -105,14 +108,31 @@ class Master:
                 queue.append(right)
 
         end_time = time.time()
-        end_time_str = time.strftime("%c")
-        
+        end_time_str = datetime.datetime.now().isoformat()
+
+        time_use = end_time - start_time
+
         # reseting and cleanning memory
         self.dview.execute('client.reset()')
         #self.clients.purge_everything()
         self.clients.purge_results('all')
 
-        return root
+        print('Time use: {} sec'.format(time_use))
+
+        # prepare for save tree
+        tree_information = {
+            'start_time': start_time_str,
+            'end_time': end_time_str,
+            'time_use': time_use,
+            'tree': self._node_to_dict(root)
+        }
+
+        f = open(tree_filename, 'w')
+        json.dump(tree_information, f, indent=2)
+        f.close()
+        print('Tree was save to {}'.format(tree_filename))
+
+        return root, tree_filename, time_use
                 
     def split(self, node):
         '''This perform 'try split' on node, then find best G finally 'real split' it
