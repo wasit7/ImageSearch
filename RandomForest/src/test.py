@@ -40,7 +40,8 @@ def main(clmax, prefix):
     #master = Master() 
     #roots = master.load_trees(prefix=prefix)
     recall = Recall()
-    roots = recall.load_trees(prefix=prefix)
+    #roots = recall.load_trees(prefix=prefix)
+    roots = recall.load_forest('main.json')
 
     sampling_rate = 30
     samples = int(sampling_rate*len(dataset)/100)

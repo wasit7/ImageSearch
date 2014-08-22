@@ -85,11 +85,14 @@ class Master:
         This will froce to save tree that it created
         '''
 
-        start_time = time.time()
-        start_time_str = datetime.datetime.now().isoformat()
+        start_time = datetime.datetime.now()
         
         # prepare for creation
-        tree_filename = str(start_time) + '.json'
+        if hasattr(start_time, 'timestamp'):
+            tree_filename = str(start_time.timestamp()) + '.json'
+        else:
+            tree_filename = start_time.strftime('%s') + '.json'
+
         H = self.cal_init_h()
         root = MasterNode(H, 0)
         queue = [root]
@@ -107,10 +110,12 @@ class Master:
                 current_node.right = right
                 queue.append(right)
 
-        end_time = time.time()
-        end_time_str = datetime.datetime.now().isoformat()
+        end_time = datetime.datetime.now()
 
-        time_use = end_time - start_time
+        if hasattr(start_time, 'timestamp'):
+            time_use = end_time.timestamp() - start_time.timestamp()
+        else:
+            time_use = int(end_time.strftime('%s')) - int(start_time.strftime('%s'))
 
         # reseting and cleanning memory
         self.dview.execute('client.reset()')
@@ -121,16 +126,15 @@ class Master:
 
         # prepare for save tree
         tree_information = {
-            'start_time': start_time_str,
-            'end_time': end_time_str,
+            'start_time': start_time.isoformat(),
+            'end_time': end_time.isoformat(),
             'time_use': time_use,
             'tree': self._node_to_dict(root)
         }
 
-        f = open(tree_filename, 'w')
-        json.dump(tree_information, f, indent=2)
-        f.close()
-        print('Tree was save to {}'.format(tree_filename))
+        with open(tree_filename, 'w') as f:
+            json.dump(tree_information, f, indent=2)
+            print('Tree was save to {}'.format(tree_filename))
 
         return root, tree_filename, time_use
                 

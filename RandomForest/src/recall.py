@@ -17,8 +17,23 @@ from master import MasterNode
 class Recall:
     def __init__(self):
         pass
+    
+    def load_forest(self, filename):
+        # this will open main file of tree
+        roots = []
+        with open(filename, 'r') as f:
+            tree_information = json.load(f)
+            for tree in tree_information['file_list']:
+                roots.append(self.load_tree(tree))
+
+        return roots
 
     def load_tree(self, filename):
+        with open(filename, 'r') as f:
+            dict_ = json.load(f)
+            return self._dict_to_node(dict_['tree'])
+
+    def _load_tree(self, filename):
         '''
         Read decision tree from file
         '''

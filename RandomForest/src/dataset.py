@@ -42,9 +42,6 @@ class Dataset:
         '''
         raise NotImplementedError
 
-    def getDimension(self):
-        raise NotImplementedError
-
     def getSize(self):
         raise NotImplementedError
 
@@ -93,7 +90,7 @@ class LibraryImageDataset(Dataset):
         # length of dataset
         self.lenDataset = len(all_file)
         # dimension of dataset
-        print all_file
+        #print all_file
 
         self.all_colors = ['rg' 'rb', 'gb', 'rbg', 'brg', 'grb']
         for index, f in  enumerate(all_file):
@@ -102,7 +99,7 @@ class LibraryImageDataset(Dataset):
             # setup L
             with open(path, 'r') as fp:
                 data = loads(fp.read())
-            print data
+            # print data
             rects = []
             for label in data['labels']:
                 rects.append(Rectangle(label=label['label'], x=label['x'],\
@@ -174,9 +171,9 @@ class SpiralDataset(Dataset):
         self.clmax = clmax;    # class max of dataset
         self.spc = spc    # q size per class per client
         
-        dimension = 2 # it is axis x and y
+        self.dimension = 2 # it is axis x and y
         
-        self.I =  np.zeros([dimension, 0], dtype=np.float)  # np.ndarray row vetor, hold features
+        self.I =  np.zeros([self.dimension, 0], dtype=np.float)  # np.ndarray row vetor, hold features
         self.L =  np.array([], dtype=np.int)    # np.array, hold label
 
         # create I
@@ -201,12 +198,6 @@ class SpiralDataset(Dataset):
         '''
         return self.I[theta, x]
 
-    def getDimension(self):
-        '''
-        Return dimension of data
-        '''
-        return self.I.shape[0]
-
     def getSize(self):
         '''
         Return size of dataset
@@ -218,7 +209,12 @@ class SpiralDataset(Dataset):
         pass
     
     def getParam(self, X):
-        pass
+        '''
+        Return list of theta, tau for X
+        '''
+        theta = np.random.randint(self.dimension, size=len(X))
+        tau = self.getI(theta, X)
+        return theta, tau
 
     def __str__(self):
         '''
@@ -228,6 +224,7 @@ class SpiralDataset(Dataset):
         return 'clmax: {cm}, spc: {ql}'.format(cm=self.clmax, ql=self.spc)
 
 if __name__ == '__main__':
-    dataset = LibraryImageDataset()
+    #dataset = LibraryImageDataset()
     # print dataset.rectL
     # print dataset.getL(188, 0, 1)
+    pass
