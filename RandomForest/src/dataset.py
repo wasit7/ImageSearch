@@ -4,12 +4,6 @@ Created on Wed Aug 06 16:12:37 2014
 
 @author: Krerkait
 """
-from json import loads
-from os import getcwd, listdir
-from os.path import join
-from PIL import Image
-from itertools import permutations
-from time import time
 
 import numpy as np
 
@@ -59,104 +53,6 @@ class Dataset:
 
     def __str__(self):
         raise NotImplementedError
-
-class Rectangle:
-    def __init__(self, label='', x=0, y=0, w=0, h=0):
-        self.label = label
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-
-    def __contains__(self, pos):
-        return self.label  if (self.x <= pos[0] <self.x+self.w) and \
-            (self.y <= pos[1] <self.y+self.h) else 0
-
-class LibraryImageDataset(Dataset):
-    def __init__(self, **kwargs):
-        self.labeledImages = []
-        # self.samples = self.getSamples()
-
-        # load JSON
-        if 'json' in kwargs:
-            json = kwargs['json']
-        else :
-            json = join('..', '..', 'App', 'json')
-
-        all_file = listdir(json)
-        if not isinstance(all_file, list):
-            all_file = [all_file]
-
-        # length of dataset
-        self.lenDataset = len(all_file)
-        # dimension of dataset
-        #print all_file
-
-        self.all_colors = ['rg' 'rb', 'gb', 'rbg', 'brg', 'grb']
-        for index, f in  enumerate(all_file):
-            path = join(json, f)
-            
-            # setup L
-            with open(path, 'r') as fp:
-                data = loads(fp.read())
-            # print data
-            rects = []
-            for label in data['labels']:
-                rects.append(Rectangle(label=label['label'], x=label['x'],\
-                    y=label['y'], w=label['w'], h=label['h']))
-            self.labeledImages.append(rects)
-            
-            # setup I
-            # img = Image.open(data['path'])
-            # w, h = img.size 
-            # colors = {}
-            # for color in self.all_colors[:]:
-            #     colors[color] = []
-            # for y in range(h):
-            #     for color in colors:
-            #         colors[color].append([])
-            #     for x in range(w):
-            #         pix = img.getpixel((x,y))
-            #         target_color = self.find_color(*pix)
-            #         for color in colors:
-            #             if color in target_color:
-            #                 colors[color][-1].append(1)
-            #             else :
-            #                 colors[color][-1].append(0)
-
-            # for color in colors:
-            #     colors[color] = np.array(colors[color])
-            #     integral_image = np.cumsum(np.cumsum(colors[color], axis=0), axis=1)
-            #     print integral_image
-
-    def find_color(self, r, g, b):
-        colors = []
-        for i, color in enumerate(self.all_colors[:]):
-            if i < 3:
-                exec('res = %s > %s'%(color[0], color[1]))
-            else :
-                exec('res = %s**2 > %s*%s'%(color[0], color[1], color[2]))
-            if res :
-                colors.append(color)
-        return colors   
-
-    def getL(x) :
-        x, y, img = self.samples[x]
-        for rect in self.L[img]:
-            if (x,y) in rect :
-                return rect.label
-        return 0
-
-    def getX(self):
-        '''
-        To random n=10 samples from each image
-        '''
-        for i in self.labeledImages:
-            width=i.width
-            height=i.height
-            c=np.random.randint(width)
-            r=np.random.randint(height)
-            self.samples.append([r,c,img])
 
 class SpiralDataset(Dataset):
     '''
