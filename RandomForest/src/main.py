@@ -11,15 +11,13 @@ import test
 
 tree_root_folder = 'tree'
 
-def main(clmax, np2c, mainfile, dataset_file):
+def main(mainfile, dataset_file):
     number_of_tree = 3
     
     master = Master(dataset_file, max_depth=30, min_bag_size=2)
     master.init_client()
 
     print('~{ Random Forest Parameter }~')
-    #print('clmax:', master.clmax)
-    #print('np2c:', master.np2c)
     print('max depth:', master.max_depth)
     print('min bag size:', master.min_bag_size)
     
@@ -52,13 +50,12 @@ def main(clmax, np2c, mainfile, dataset_file):
     print('Avg run time per tree: {} sec'.format(1.0*total_run_time/number_of_tree*1.0))
 
 if __name__ == '__main__':
-    if len(sys.argv) < 4:
-        print('Usage: {} <clmax> <np2c> <main JSON file>')
+    if len(sys.argv) < 3:
+        print('Usage: {} <main JSON file name> <dataset file>')
         sys.exit(1)
     
-    clmax = int(sys.argv[1])
-    np2c = int(sys.argv[2])
+    clmax = 5
     
-    main(clmax, np2c, sys.argv[3], 'SpiralDataset.py')
+    main(sys.argv[1], sys.argv[2])
 
-    test.main(clmax, os.path.join(tree_root_folder, sys.argv[3]))
+    test.main(clmax, os.path.join(tree_root_folder, sys.argv[1]))
