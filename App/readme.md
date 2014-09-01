@@ -1,1 +1,0 @@
-the label application mantained by TT
