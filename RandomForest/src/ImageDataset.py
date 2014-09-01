@@ -89,6 +89,9 @@ class ImageDataset(Dataset):
     # This method is under construction
     # Problem is dicide pass NP-Array or For loop
     def getParam(self, x):
+        """" return pairs of theta and tau. both are numpy array
+        where x is numpy array
+        """
 
         n = len(x)
 
@@ -147,3 +150,4 @@ if __name__ == '__main__':
     print 'Real answer: ', k.intImgs[1][-1][-1, -1]
     print 'getI answer: ', k.getI(theta, x2)
 # k.getI()
+    print 'getParam:', k.getParam(np.arange(0,10))
