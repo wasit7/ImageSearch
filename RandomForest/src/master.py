@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 Created on Wed Aug 06 15:06:13 2014
 
 @author: Krerkait
 """
 import os
+import os.path
 import sys
 import time
 import json
@@ -14,6 +14,9 @@ import numpy as np
 from IPython import parallel
 
 from client import Client
+
+dataset_root_folder = 'dataset'
+tree_root_folder = 'tree'
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # MasterNode
@@ -39,12 +42,15 @@ class MasterNode:
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 class Master:
     '''This class are on Master side in cluster'''
-    def __init__(self, clmax=5, np2c=30, max_depth=30, min_bag_size=2):
+    def __init__(self, dataset_file, max_depth=30, min_bag_size=2):
         '''Init routine
         That setup client
         '''
-        self.clmax = clmax
-        self.np2c = np2c
+        #self.clmax = clmax
+        #self.np2c = np2c
+
+        self.dataset_file = dataset_file
+
         self.max_depth = max_depth
         self.min_bag_size = min_bag_size
             
@@ -57,8 +63,8 @@ class Master:
     
     def init_client(self):
         # init client
-        self.dview.push({'spc':self.np2c, 'clmax':self.clmax});
-        self.dview.run('dataset.py')
+        #self.dview.push({'spc':self.np2c, 'clmax':self.clmax});
+        self.dview.run(os.path.join(dataset_root_folder, self.dataset_file))
         self.dview.run('client.py')
     
     def cal_init_h(self):
@@ -112,9 +118,12 @@ class Master:
 
         end_time = datetime.datetime.now()
 
+        # check for python's version that we are running
         if hasattr(start_time, 'timestamp'):
+            # python3
             time_use = end_time.timestamp() - start_time.timestamp()
         else:
+            # python2
             time_use = int(end_time.strftime('%s')) - int(start_time.strftime('%s'))
 
         # reseting and cleanning memory
@@ -132,7 +141,7 @@ class Master:
             'tree': self._node_to_dict(root)
         }
 
-        with open(tree_filename, 'w') as f:
+        with open(os.path.join(tree_root_folder, tree_filename), 'w') as f:
             json.dump(tree_information, f, indent=2)
             print('Tree was save to {}'.format(tree_filename))
 

@@ -7,9 +7,9 @@ from os.path import join
 import numpy as np
 from scipy import misc
 
-from dataset import Dataset
+# from dataset import Dataset
 
-class ImageDataset(Dataset):
+class ImageDataset():
     def __init__(self, **kwargs):
         # For collect Sample
         # Each index is [x, y, Iimg, Limg]
@@ -110,17 +110,7 @@ class ImageDataset(Dataset):
             tau = self.getI(theta, self.samples[x[i]])
             param_list.append([theta, tau])
 
-        print(param_list)
-        '''
-        m = 50
-        n = len(x)
-        ux = np.random.randint(m, 480-m, n)
-        uy = np.random.randint(m, 480-m, n)
-        w = np.random.randint(0, m, n)
-        h = np.random.randint(0, m, n)
-        bins = np.random.randint(0, 5, n)
-        # return self.getI(np.array(), np.array())
-        '''
+        return np.array(param_list)
                 
     def getI(self, theta, x):
         # @param theta contains ux, uy, w, h, bins
@@ -134,8 +124,10 @@ class ImageDataset(Dataset):
         return self.samples[x,3]
 
 if __name__ == '__main__':
+    pass
+    '''
     k = ImageDataset()
-# print k.getL(k.getX())
+    # print k.getL(k.getX())
     k.getL(k.getX())
     theta = (0, 0, 639, 479, 5)
     x1 = (0, 0, 0)
@@ -148,4 +140,5 @@ if __name__ == '__main__':
     print '='*6, 'Img2', '='*6
     print 'Real answer: ', k.intImgs[1][-1][-1, -1]
     print 'getI answer: ', k.getI(theta, x2)
-# k.getI()
+    # k.getI()
+    '''

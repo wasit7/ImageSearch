@@ -1,15 +1,17 @@
-# -*- coding: utf-8 -*-
 """
 Created on Fri Aug 08 16:01:00 2014
 
 @author: Krerkait
 """
 import os
+import os.path
 import json
 
 import numpy as np
 
 from master import MasterNode
+
+tree_root_folder = 'tree'
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # Recall
@@ -24,7 +26,7 @@ class Recall:
         with open(filename, 'r') as f:
             tree_information = json.load(f)
             for tree in tree_information['file_list']:
-                roots.append(self.load_tree(tree))
+                roots.append(self.load_tree(os.path.join(tree_root_folder, tree)))
 
         return roots
 
@@ -32,19 +34,8 @@ class Recall:
         with open(filename, 'r') as f:
             dict_ = json.load(f)
             return self._dict_to_node(dict_['tree'])
-
-    def _load_tree(self, filename):
-        '''
-        Read decision tree from file
-        '''
-        f = open(filename, 'r')
-        dict_ = json.load(f)
-        f.close()
-        root = self._dict_to_node(dict_)
-        print('{} loaded'.format(filename))
-        return root
         
-    def load_trees(self, path='.', prefix='tree'):
+    def _load_trees(self, path='.', prefix='tree'):
         '''
         Read set of decision tree from set of files that match prefix
         '''
