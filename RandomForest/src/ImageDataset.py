@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 from json import loads
 from os import getcwd, listdir
 from os.path import join
