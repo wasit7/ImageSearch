@@ -1,12 +1,10 @@
-<<<<<<< HEAD:RandomForest/src/dataset.py
+
 """
 Created on Wed Aug 06 16:12:37 2014
 
 @author: Krerkait
 """
 
-=======
->>>>>>> origin/restructure-dataset-n-client:RandomForest/src/dataset/SpiralDataset.py
 import numpy as np
 
 class SpiralDataset:
