@@ -40,15 +40,13 @@ class Client:
         self.dataset = dataset
         
         self.current_node = None
-        #self.queue = [ClientNode(np.arange(0, self.clmax*self.dataset.spc))] # np.arange(0, clmax*spc) - use all dataset
-        self.queue = [ClientNode(np.arange(0, self.dataset.getSize() ))]
+        self.queue = [ClientNode(dataset.getX())]
         
     def reset(self):
         '''Reset current_node and queue to start state for ready to create new tree with new parameter'''
         # init bag (queue)
         self.current_node = None
-        #self.queue = [ClientNode(np.arange(0, self.clmax*self.dataset.spc))] # np.arange(0, clmax*spc) - use all dataset
-        self.queue = [ClientNode(np.arange(0, self.dataset.getSize() ))]
+        self.queue = [ClientNode(dataset.getX())]
     
     def get_init_parameter(self):
         '''Calculate init H (entropy) of first ndoe
@@ -185,5 +183,8 @@ class Client:
         return np.sum(self.cnt_appear(self.current_node.bag))
     
 if __name__ == '__main__':
-    dataset = SpiralDataset(clmax, spc)
+    #dataset = SpiralDataset(clmax, spc)
     client = Client(clmax, dataset)
+
+    #dataset = ImageDataset(json='json')
+    #client = Client(len(dataset.samples), dataset)

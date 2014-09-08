@@ -32,7 +32,7 @@ def dataSetGenerator(clmax):
             data.append(Record([xPoints[i], yPoints[i]], x))
     return data
 
-def main(clmax, prefix):
+def main(clmax, mainfile):
     # generate dataset for test
     dataset = dataSetGenerator(clmax)
 
@@ -40,7 +40,7 @@ def main(clmax, prefix):
     #roots = master.load_trees(prefix=prefix)
     recall = Recall()
     #roots = recall.load_trees(prefix=prefix)
-    roots = recall.load_forest('main.json')
+    roots = recall.load_forest(mainfile)
 
     sampling_rate = 30
     samples = int(sampling_rate*len(dataset)/100)
@@ -63,6 +63,6 @@ def main(clmax, prefix):
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print('Usage: ', sys.argv[0], ' <clmax> <tree_prefix>')
+        print('Usage: ', sys.argv[0], ' <mainfile>')
         sys.exit(1)
-    main(int(sys.argv[1]), sys.argv[2])
+    main(int(sys.argv[1]))
