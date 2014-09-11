@@ -40,7 +40,7 @@ class SpiralDataset:
         '''
         return self.I[theta, x]
 
-    def getSize(self):
+    def _getSize(self):
         '''
         Return size of dataset
         '''
@@ -48,7 +48,7 @@ class SpiralDataset:
         return self.clmax * self.spc
 
     def getX(self):
-        return np.arange(0, self.getSize())
+        return np.arange(0, self.clmax * self.spc)
     
     def getParam(self, X):
         '''

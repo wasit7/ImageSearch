@@ -18,8 +18,8 @@ def main(mainfile, dataset_file):
     master.init_client()
 
     print('~{ Random Forest Parameter }~')
-    print('max depth:', master.max_depth)
-    print('min bag size:', master.min_bag_size)
+    print('max depth: {}'.format(master.max_depth))
+    print('min bag size: {}'.format(master.min_bag_size))
     
     print('Will create {} tree(s):'.format(number_of_tree))
     
