@@ -35,9 +35,6 @@ class Dataset:
         '''
         raise NotImplementedError
 
-    def getSize(self):
-        raise NotImplementedError
-
     def getX(self):
         raise NotImplementedError
 

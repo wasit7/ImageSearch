@@ -4,7 +4,7 @@ information from dicision trees.
 
 Created on Fri Aug 08 16:01:00 2014
 
-@author: Krerkait
+@author: Krerkkiat
 """
 import os
 import os.path

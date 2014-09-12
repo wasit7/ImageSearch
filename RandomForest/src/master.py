@@ -3,7 +3,7 @@ Contain class that live on master side of program.
 
 Created on Wed Aug 06 15:06:13 2014
 
-@author: Krerkait
+@author: Krerkkiat
 """
 
 import json
