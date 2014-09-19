@@ -99,5 +99,5 @@ class SpiralDataset:
 
 if __name__ == '__main__':
     clmax = 5
-    spc = 1000
+    spc = int(1e3)
     dataset = SpiralDataset(clmax, spc)
