@@ -80,14 +80,14 @@ class master:
             print('{0}, depth{1}'.\
                     format(self.curNode.key,self.curNode.depth)
                     )
-#032 addH to left and right nodes
-            minQ=self.addH()  
+  
             if self.curNode.depth<1:
 #04     terminate
                 self.terminate('Depth')
 #041 else:
             else:
-              
+#032 addH to left and right nodes
+                minQ=self.addH()
 
                     
 #06 if size of taus too samll
