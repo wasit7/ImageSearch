@@ -14,6 +14,7 @@ Todo list
    getI( theta, x )
    getParam( x )
 ___
+
 ### class LibraryImageDataset
 1. Implement getX() <Off>
    to random set of n coordinates form each image and store in this format,  samples = { [ r, c, img ] }
